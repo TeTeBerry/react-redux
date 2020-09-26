@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Table, Button } from "antd";
 import "./App.css";
 import Child from "./Child";
 
 const App = () => {
-  const [edit, setEdit] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [data, setData] = useState({});
+  const childRef = useRef();
+
   const dataSource = [
     {
       key: "1",
@@ -51,21 +50,30 @@ const App = () => {
   ];
 
   const handleEdit = (record) => {
-    setShowModal(true);
-    setEdit(true);
-    setData(record);
+    let landForm = {
+      name: record.name,
+      address: record.address,
+      age: record.age,
+    };
+
+    childRef.current.show({ landForm });
   };
 
   const handleAdd = () => {
-    setShowModal(true);
+    let landForm = {
+      name: "",
+      address: "",
+      age: "",
+    };
+
+    childRef.current.show({ landForm });
   };
 
   return (
     <div>
       <Button onClick={() => handleAdd()}>add</Button>
       <Table columns={columns} dataSource={dataSource} />
-
-      <Child edit={edit} showModal={showModal} record={data} />
+      <Child ref={childRef} />
     </div>
   );
 };

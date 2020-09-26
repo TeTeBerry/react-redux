@@ -1,13 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  forwardRef,
+  useEffect,
+  useRef,
+  useCallback,
+  useImperativeHandle,
+} from "react";
 import { Modal } from "antd";
 import CompositeSearch from "./components/CompositeSearch";
 import "./App.css";
+import { set } from "lodash";
 
-const Child = (props) => {
+let Child = (props, ref) => {
+  const [formData, setFormData] = useState(false);
+  const [data, setData] = useState({});
   const [visible, setVisible] = useState(false);
-  const [ok, setOk] = useState(false);
   const [initialValues, setInitialValues] = useState({});
   const [itemList, setItemList] = useState([
+    {
+      name: "address",
+      label: "地址",
+      type: "Input",
+      props: {},
+    },
+    {
+      name: "name",
+      label: "名字",
+      type: "Input",
+      props: {},
+    },
     {
       name: "age",
       label: "年龄",
@@ -21,41 +42,67 @@ const Child = (props) => {
     },
   ]);
 
-  useEffect(() => {
-    setVisible(props.showModal);
-    if (props.edit) {
-      setInitialValues({ age: props.record.age });
-    }
-  }, [props.edit, props.record, props.showModal]);
+  const show = (newVal) => {
+    setVisible(true);
+    setData(newVal);
 
-  const handleOk = () => {
-    setOk(true);
+    setFormData(true);
+
+    // formChange.setFieldsValue(data.landForm);
   };
 
-  const cancle = () => {
+  useImperativeHandle(ref, () => {
+    return {
+      show: show,
+    };
+  });
+
+  useEffect(() => {}, [initialValues]);
+
+  const handleOk = (data) => {
+    console.log(data);
+    reset();
+  };
+
+  const formChange = (form) => {
+    if (formData) {
+      form.setFieldsValue(data.landForm);
+    }
+  };
+
+  const handleChange = (value) => {
+    setData({
+      ...value,
+    });
+  };
+
+  const reset = () => {
     setVisible(false);
-  };
-
-  const formValue = (form) => {
-    if (ok) {
-      let forms = form.getFieldsValue();
-      console.log(forms);
-    }
   };
 
   return (
     <div className="App">
-      <Modal visible={visible} onOk={handleOk} onCancel={() => cancle()}>
+      <Modal
+        visible={visible}
+        onOk={() => handleOk()}
+        onCancel={() => reset()}
+        footer={null}
+      >
         <CompositeSearch
-          mount={(form) => formValue(form)}
-          showBtns={false}
-          itemList={itemList}
-          onReset={cancle}
+          onChange={handleChange}
+          mount={(form) => formChange(form)}
+          // showBtns={false}
           initialValues={initialValues}
+          itemList={itemList}
+          onSearch={(data) => handleOk(data)}
+          type="form"
+          onReset={() => reset()}
         />
       </Modal>
     </div>
   );
 };
+
+Child = forwardRef(Child);
 
 export default Child;
