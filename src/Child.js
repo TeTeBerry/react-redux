@@ -1,15 +1,7 @@
-import React, {
-  useState,
-  forwardRef,
-  useEffect,
-  useRef,
-  useCallback,
-  useImperativeHandle,
-} from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { Modal } from "antd";
 import CompositeSearch from "./components/CompositeSearch";
 import "./App.css";
-import { set } from "lodash";
 
 let Child = (props, ref) => {
   const [formData, setFormData] = useState(false);
@@ -40,15 +32,18 @@ let Child = (props, ref) => {
         ],
       },
     },
+    {
+      name: "search",
+      label: "",
+      type: "Search",
+      props: {},
+    },
   ]);
 
   const show = (newVal) => {
     setVisible(true);
     setData(newVal);
-
     setFormData(true);
-
-    // formChange.setFieldsValue(data.landForm);
   };
 
   useImperativeHandle(ref, () => {
@@ -56,8 +51,6 @@ let Child = (props, ref) => {
       show: show,
     };
   });
-
-  useEffect(() => {}, [initialValues]);
 
   const handleOk = (data) => {
     console.log(data);

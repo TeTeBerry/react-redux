@@ -32,6 +32,7 @@ const comIdReamCom = {
   Switch: Switch,
   InputNumber: InputNumber,
   Checkbox: Checkbox,
+  Search: Input.Search,
   Cascader: Cascader,
   Rate: Rate,
   Radio: Radio,

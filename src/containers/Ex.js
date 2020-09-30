@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Card, Col, Row } from "antd";
 import "./App.css";
 
 const source = [
